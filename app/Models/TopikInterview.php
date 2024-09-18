@@ -19,4 +19,9 @@ class TopikInterview extends Model
     {
         return $this->belongsTo(Seleksi::class);
     }
+
+    public function bankSoal()
+    {
+        return $this->belongsTo(BankSoal::class);
+    }
 }

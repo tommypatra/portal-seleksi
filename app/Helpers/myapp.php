@@ -1,47 +1,72 @@
 <?php
 
-use App\Models\User;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Peserta;
+use App\Models\Seleksi;
+use App\Models\RoleUser;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 
 if (!function_exists('daftarAkses')) {
     function daftarAkses($user_id)
     {
         $listAkses = [];
-        $getUser = User::where('id', $user_id)
-            ->with([
-                'admin' => function ($query) {
-                    $query->where('is_aktif', 1);
-                },
-                'interviewer' => function ($query) {
-                    $query->where('is_aktif', 1);
-                },
-                'peserta' => function ($query) {
-                    $query->where('is_aktif', 1);
-                },
-                'verifikator' => function ($query) {
-                    $query->where('is_aktif', 1);
-                }
-            ])
-            ->first();
+        $getUser = User::with(['roleUser.role', 'peserta'])->where('id', $user_id)->first();
+        // dd($getUser);
+        if (is_null($getUser)) {
+            return [];
+        }
 
-        if ($getUser->admin()->exists())
-            $listAkses[] = ['grup_id' => 1, 'nama' => 'Admin', 'id' => $getUser->admin->first()->id];
+        foreach ($getUser->roleUser as $i => $dt) {
+            $listAkses[] = ['grup_id' => $dt->role_id, 'nama' => $dt->role->nama, 'role_user_id' => $dt->id];
+        }
 
-        if ($getUser->interviewer()->exists())
-            $listAkses[] = ['grup_id' => 2, 'nama' => 'Interviewer', 'id' => $getUser->interviewer->first()->id];
-
-        if ($getUser->verifikator()->exists())
-            $listAkses[] = ['grup_id' => 3, 'nama' => 'Verifikator', 'id' => $getUser->verifikator->first()->id];
-
-        if ($getUser->peserta()->exists())
-            foreach ($getUser->peserta as $peserta)
-                $listAkses[] = ['grup_id' => 4, 'nama' => 'Peserta ' . $peserta->noid, 'id' => $peserta->id];
-
-        // return $listAkses;
+        foreach ($getUser->peserta as $i => $dt) {
+            $listAkses[] = ['grup_id' => 0, 'nama' => 'Peserta ' . $dt->noid, 'role_user_id' => $dt->id];
+        }
+        // dd($listAkses);
         return json_decode(json_encode($listAkses));
+    }
+}
+
+if (!function_exists('dataPeserta')) {
+    function dataPeserta($user_id)
+    {
+        $dt = Peserta::with(['user'])->where('user_id', $user_id)->get();
+        if ($dt->isEmpty()) {
+            return [];
+        }
+        return json_decode(json_encode($dt));
+    }
+}
+
+if (!function_exists('cekStatusJadwal')) {
+    function cekStatusJadwal($start, $end)
+    {
+        $today = date('Y-m-d'); // Tanggal hari ini dalam format Y-m-d
+
+        // Ubah format tanggal mulai dan selesai ke Y-m-d
+        $startDate = date('Y-m-d', strtotime($start));
+        $endDate = date('Y-m-d', strtotime($end));
+
+        return ($today >= $startDate && $today <= $endDate);
+    }
+}
+
+if (!function_exists('statusJadwal')) {
+    function statusJadwal($id)
+    {
+        $statusDaftar = false;
+        $statusVerifikasi = false;
+        $dt = Seleksi::where('id', $id)->first();
+        if ($dt) {
+            $statusDaftar = cekStatusJadwal($dt->daftar_mulai, $dt->daftar_selesai);
+            $statusVerifikasi = cekStatusJadwal($dt->verifikasi_mulai, $dt->verifikasi_selesai);
+        }
+
+        return json_decode(json_encode(['statusDaftar' => $statusDaftar, 'statusVerifikasi' => $statusVerifikasi]));
     }
 }
 
@@ -158,35 +183,39 @@ if (!function_exists('ukuranFile')) {
 if (!function_exists('uploadFile')) {
     function uploadFile($request, $reqFileName = 'file', $storagePath = null, $fileName = null)
     {
-        $uploadedFile = $request->file($reqFileName);
-        if (!$uploadedFile->isValid()) {
-            return false;
+        try {
+            $uploadedFile = $request->file($reqFileName);
+            if (!$uploadedFile->isValid()) {
+                return false;
+            }
+
+            $originalFileName = $uploadedFile->getClientOriginalName();
+            $ukuranFile = $uploadedFile->getSize();
+            $tipeFile = $uploadedFile->getMimeType();
+            $ext = $uploadedFile->getClientOriginalExtension();
+            if (!$storagePath)
+                $storagePath = 'uploads/' . date('Y') . '/' . date('m');
+
+            if (!File::isDirectory(public_path($storagePath))) {
+                File::makeDirectory(public_path($storagePath), 0755, true);
+            }
+
+            if (!$fileName)
+                $fileName = generateUniqueFileName();
+            $fileName .= '.' . $ext;
+
+            $uploadedFile->move(public_path($storagePath), $fileName);
+            $fileFullPath = public_path($storagePath . '/' . $fileName);
+            chmod($fileFullPath, 0755);
+            $path = $storagePath . '/' . $fileName;
+            return [
+                'path' => $path,
+                'jenis' => $tipeFile,
+                'ukuran' => ($ukuranFile / 1024),
+            ];
+        } catch (\Exception $e) {
+            return 'Gagal mengunggah file. ' . $e->getMessage();
         }
-
-        $originalFileName = $uploadedFile->getClientOriginalName();
-        $ukuranFile = $uploadedFile->getSize();
-        $tipeFile = $uploadedFile->getMimeType();
-        $ext = $uploadedFile->getClientOriginalExtension();
-        if (!$storagePath)
-            $storagePath = 'uploads/' . date('Y') . '/' . date('m');
-
-        if (!File::isDirectory(public_path($storagePath))) {
-            File::makeDirectory(public_path($storagePath), 0755, true);
-        }
-
-        if (!$fileName)
-            $fileName = generateUniqueFileName();
-        $fileName .= '.' . $ext;
-
-        $uploadedFile->move(public_path($storagePath), $fileName);
-        $fileFullPath = public_path($storagePath . '/' . $fileName);
-        chmod($fileFullPath, 0755);
-        $path = $storagePath . '/' . $fileName;
-        return [
-            'path' => $path,
-            'jenis' => $tipeFile,
-            'ukuran' => ($ukuranFile / 1024),
-        ];
     }
 }
 

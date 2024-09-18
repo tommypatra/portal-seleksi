@@ -19,4 +19,9 @@ class Verifikator extends Model
     {
         return $this->hasMany(PemeriksaSyarat::class);
     }
+
+    public function verifikatorSeleksi()
+    {
+        return $this->hasMany(VerifikatorSeleksi::class);
+    }
 }

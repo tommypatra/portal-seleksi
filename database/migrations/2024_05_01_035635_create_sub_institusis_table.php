@@ -20,6 +20,7 @@ class CreateSubInstitusisTable extends Migration
             $table->string('keterangan')->nullable();
             $table->foreignId('institusi_id');
             $table->foreign('institusi_id')->references('id')->on('institusis')->restrictOnDelete();
+            $table->unique(['nama', 'institusi_id']);
             $table->timestamps();
         });
     }

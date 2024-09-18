@@ -58,6 +58,11 @@ class WebAppController extends Controller
         return view('dashboard.seleksi');
     }
 
+    public function akun()
+    {
+        return view('dashboard.akun');
+    }
+
     public function institusi()
     {
         return view('dashboard.institusi');
@@ -66,5 +71,35 @@ class WebAppController extends Controller
     public function pengaturan($seleksi_id)
     {
         return view('dashboard.pengaturan', ['seleksi_id' => $seleksi_id]);
+    }
+
+    public function institusiDetail($institusi_id)
+    {
+        return view('dashboard.institusi_detail', ['institusi_id' => $institusi_id]);
+    }
+
+    public function jadwalSeleksi()
+    {
+        return view('dashboard.jadwal_seleksi');
+    }
+
+    public function interviewer()
+    {
+        return view('dashboard.interviewer');
+    }
+
+    public function daftarPesertaInterview($seleksi_id)
+    {
+        return view('dashboard.daftar_peserta_interview', ['seleksi_id' => $seleksi_id]);
+    }
+
+    public function verifikator()
+    {
+        return view('dashboard.verifikator');
+    }
+
+    public function instrumenWawancara($seleksi_id)
+    {
+        return view('dashboard.instrumen_wawancara', ['seleksi_id' => $seleksi_id]);
     }
 }

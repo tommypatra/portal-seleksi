@@ -17,6 +17,7 @@ class CreateSyaratsTable extends Migration
             $table->id();
             $table->string('nama');
             $table->boolean('is_wajib')->booelan(1);
+            $table->enum('jenis', ['pdf', 'img'])->deault('pdf');
             $table->text('keterangan')->nullable();
             $table->foreignId('seleksi_id');
             $table->foreign('seleksi_id')->references('id')->on('seleksis')->restrictOnDelete();

@@ -26,7 +26,7 @@ function tambah() {
                 <td></td>
                 <td><input type="text" class="form-control nama" name="nama[]"></td>
                 <td>
-                    <select class="form-control is_negeri" name="is_negeri[]">
+                    <select class="form-select is_negeri" name="is_negeri[]">
                         <option value='1'>Negeri</option>
                         <option value='0'>Swasta</option>
                     </select>
@@ -46,7 +46,7 @@ function loadData(page = 1, search = '') {
     var url = endpoint + '?page=' + page + '&search=' + search + '&limit=' + vLimit;
     fetchData(url, function(response) {
         renderData(response);
-    });
+    },true);
 }
 
 //untuk render respon institusi ke tabel
@@ -62,10 +62,11 @@ function renderData(response){
             dataList.append(`<tr data-id="${dt.id}"> 
                 <td>${no++}</td> 
                 <td><input type="text" class="form-control nama" name="nama[]" value="${dt.nama}"></td> 
-                <td><select class="form-control is_negeri" name="is_negeri[]" id="${eid}"></select></td> 
+                <td><select class="form-select is_negeri" name="is_negeri[]" id="${eid}"></select></td> 
                 <td>
                     <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-danger hapus" data-id="${dt.id})" >Hapus</button>
+                    <button type="button" class="btn btn-info institusi-detail" data-id="${dt.id}" >Detail</button>
+                    <button type="button" class="btn btn-danger hapus" data-id="${dt.id}" >Hapus</button>
                     </div>                                        
                 </td>
             </tr>`);
@@ -94,7 +95,8 @@ $(document).on('click', '.simpan-baris', function() {
         baris.find(".simpan-baris, .batal-baris").hide();
         baris.attr("data-id", dt.id);
         baris.find("td:eq(3)").html(`<div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-danger hapus" data-id="${dt.id})" >Hapus</button>
+                                        <button type="button" class="btn btn-info institusi-detail" data-id="${dt.id}" >Detail</button>
+                                        <button type="button" class="btn btn-danger hapus" data-id="${dt.id}" >Hapus</button>
                                     </div>`);
         toastr.success('operasi berhasil dilakukan!', 'berhasil');
     });    
@@ -106,6 +108,11 @@ $('#data-list').on('focusin', 'input, select, textarea', function() {
     oldValue = $(this).val();
 });
 
+$(document).on('click','.institusi-detail',function(){
+    const id = $(this).attr('data-id');
+    window.location.replace(base_url + '/institusi-detail/'+id);
+})
+
 $('#data-list').on('focusout', 'input, select, textarea', function() {
     const tr = $(this).closest('tr');
     const id = $(tr).attr('data-id');
@@ -116,7 +123,7 @@ $('#data-list').on('focusout', 'input, select, textarea', function() {
             nama: $(tr).find('.nama').val(),
             is_negeri: $(tr).find('.is_negeri').val(),
         };
-        console.log(postData);
+        // console.log(postData);
         saveData(url, 'PUT', postData, function(response) {
             toastr.success('operasi berhasil dilakukan!', 'berhasil');
             // loadData();
@@ -128,6 +135,7 @@ $('#data-list').on('focusout', 'input, select, textarea', function() {
 //listener untuk btn-aksi baik itu ganti atau hapus langsung ke endpoint
 $(document).on('click', '.hapus', function() {
     const id = $(this).data('id');
+    // console.log(id);
     deleteData(endpoint, id, function() {
         toastr.success('operasi berhasil dilakukan!', 'berhasil');
         loadData();

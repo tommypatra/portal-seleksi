@@ -15,12 +15,14 @@ class CreateTopikInterviewsTable extends Migration
     {
         Schema::create('topik_interviews', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
             $table->text('keterangan')->nullable();
             $table->smallInteger('bobot')->default(0);
+            $table->foreignId('bank_soal_id');
+            $table->foreign('bank_soal_id')->references('id')->on('bank_soals')->restrictOnDelete();
             $table->foreignId('seleksi_id');
             $table->foreign('seleksi_id')->references('id')->on('seleksis')->restrictOnDelete();
             $table->timestamps();
+            $table->unique(['bank_soal_id', 'seleksi_id']);
         });
     }
 

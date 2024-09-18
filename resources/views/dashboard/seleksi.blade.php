@@ -8,6 +8,12 @@
 @section('container')
 <h1>Jadwal Seleksi</h1>
 <p>digunakan untuk mengelola jadwal seleksi</p>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Seleksi</li>
+    </ol>
+</nav>
 
 <div class="row">
     <div class="col-sm-12">
@@ -23,7 +29,7 @@
     </div>
 </div>
 
-<div class="table-responsive">
+<div class="table-responsive" style="min-height: 300px;">
     <table class="table">
         <thead>
             <tr>
@@ -31,8 +37,9 @@
                 <th scope="col">Nama Seleksi/ Pengelola (Tahun)</th>
                 <th scope="col">Pendaftaran</th>
                 <th scope="col">Verifikasi</th>
-                <th scope="col">Jenis</th>
-                <th scope="col">Keterangan</th>
+                <th scope="col">Jenis/ Keterangan</th>
+                <th scope="col">Status Publikasi</th>
+                <th scope="col">Jumlah Pendaftar</th>
                 <th scope="col">Aksi</th>
             </tr>
         </thead>
@@ -123,6 +130,15 @@
                         </div>
                     </div>
 
+                    <div class="mb-3 row">
+                        <label for="keterangan" class="col-sm-2 col-form-label">Publikasi</label>
+                        <div class="col-sm-10">
+                            <select class="form-select" name="is_publish" id="is_publish" required>
+                                <option value="0">Tidak Terpublikasi</option>
+                                <option value="1">Terpublikasi</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">

@@ -76,26 +76,21 @@
     //untuk login
     $("#myform").validate({
         submitHandler: function(form) {
-            $.ajax({
-                url: base_url + '/api/auth-cek',
-                type: 'post',
-                data: $(form).serialize(),
-                dataType: 'json',
-                success: function(response) {
+
+            ajaxRequest(base_url + '/api/auth-cek', 'post', $(form).serialize(), false,
+                function(response) {
                     localStorage.setItem('access_token', response.access_token);
                     localStorage.setItem('daftar_akses', JSON.stringify(response.daftar_akses));
                     localStorage.setItem('akses_grup', response.akses_grup);
+                    localStorage.setItem('role_user_id', response.role_user_id);
 
                     toastr.success('set session berhasil, akan diarahkan ke halaman dashboard!', 'login berhasil', {
                         timeOut: 1000
                     });
                     var goUrl = `{{ url('/dashboard') }}`;
                     window.location.replace(goUrl);
-                },
-                error: function() {
-                    alert('login gagal, user atau password anda salah!');
                 }
-            });
+            );
         }
     });
 </script>

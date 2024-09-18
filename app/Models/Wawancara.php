@@ -20,8 +20,14 @@ class Wawancara extends Model
         return $this->belongsTo(Pendaftar::class);
     }
 
+    //dihapus
     public function interview()
     {
         return $this->belongsTo(Interviewer::class);
+    }
+
+    public function roleSeleksi()
+    {
+        return $this->belongsTo(RoleSeleksi::class);
     }
 }

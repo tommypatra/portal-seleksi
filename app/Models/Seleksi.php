@@ -46,8 +46,23 @@ class Seleksi extends Model
         return $this->hasMany(Syarat::class);
     }
 
+    public function roleSeleksi()
+    {
+        return $this->hasMany(RoleSeleksi::class);
+    }
+
     public function topikInterview()
     {
         return $this->hasMany(TopikInterview::class);
+    }
+
+    public function seleksiAsal()
+    {
+        return $this->hasMany(SeleksiAsal::class);
+    }
+
+    public function verifikatorSeleksi()
+    {
+        return $this->hasMany(VerifikatorSeleksi::class);
     }
 }

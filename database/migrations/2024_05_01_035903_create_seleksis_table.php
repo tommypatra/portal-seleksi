@@ -21,7 +21,10 @@ class CreateSeleksisTable extends Migration
             $table->date('daftar_selesai');
             $table->date('verifikasi_mulai');
             $table->date('verifikasi_selesai');
+            $table->date('wawancara_mulai');
+            $table->date('wawancara_selesai');
             $table->text('keterangan')->nullable();
+            $table->boolean('is_publish')->default(0);
             $table->foreignId('jenis_id');
             $table->foreign('jenis_id')->references('id')->on('jenis')->restrictOnDelete();
             $table->foreignId('user_id');

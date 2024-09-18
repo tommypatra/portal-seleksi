@@ -17,12 +17,12 @@ class InstitusiRequest extends FormRequest
             'nama' => 'required|string',
             'is_negeri' => 'required|integer',
         ];
-        if ($this->isMethod('put')) {
-            $rules = [
-                'nama' => 'nullable|string',
-                'is_negeri' => 'nullable|integer',
-            ];
-        }
+        // if ($this->isMethod('put')) {
+        //     $rules = [
+        //         'nama' => 'nullable|string',
+        //         'is_negeri' => 'nullable|integer',
+        //     ];
+        // }
 
         return $rules;
     }

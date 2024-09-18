@@ -15,6 +15,7 @@ class CreatePendaftarsTable extends Migration
     {
         Schema::create('pendaftars', function (Blueprint $table) {
             $table->id();
+            $table->year('tahun');
             $table->foreignId('peserta_id');
             $table->foreign('peserta_id')->references('id')->on('pesertas')->restrictOnDelete();
             $table->foreignId('seleksi_id');

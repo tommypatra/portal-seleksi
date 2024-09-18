@@ -17,6 +17,13 @@ class SyaratController extends Controller
             $dataQuery->where('nama', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->filled('seleksi_id')) {
+            $seleksi_id = $request->input('seleksi_id');
+            $dataQuery->whereHas('seleksi', function ($query) use ($seleksi_id) {
+                $query->where('id', $seleksi_id);
+            });
+        }
+
         $limit = $request->filled('limit') ? $request->limit : 0;
         if ($limit) {
             $data = $dataQuery->paginate($limit);

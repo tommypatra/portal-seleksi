@@ -34,4 +34,9 @@ class Pendaftar extends Model
     {
         return $this->hasMany(Wawancara::class);
     }
+
+    public function roleUser()
+    {
+        return $this->belongsTo(RoleUser::class);
+    }
 }

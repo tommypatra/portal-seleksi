@@ -19,20 +19,24 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
 
             $daftarAkses = daftarAkses($user->id);
+            // dd($daftarAkses);
+            // die;
             $token = $user->createToken('api_token')->plainTextToken;
             // $token = $user->createToken('api-token', ['user_id' => $user->id, 'user_group' => $daftarAkses])->plainTextToken;
             $akses_grup = $daftarAkses[0]->grup_id;
+            $role_user_id = $daftarAkses[0]->role_user_id;
             $respon_data = [
                 'message' => 'Login successful',
                 'data' => $user,
                 'access_token' => $token,
                 'akses_grup' => $akses_grup,
                 'daftar_akses' => $daftarAkses,
+                'role_user_id' => $role_user_id,
                 'token_type' => 'Bearer',
             ];
             return response()->json($respon_data, 200);
         }
-        return response()->json(['message' => 'Unauthorized'], 401);
+        return response()->json(['message' => 'user not found'], 404);
     }
 
     function tokenCek($grup_id)

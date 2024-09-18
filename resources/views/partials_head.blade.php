@@ -25,6 +25,7 @@
     left: 0;
   }
 
+
   /* Styles for main content */
   .main-content {
     min-height: calc(100vh - 70px);

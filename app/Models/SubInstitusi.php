@@ -19,4 +19,9 @@ class SubInstitusi extends Model
     {
         return $this->hasMany(Peserta::class);
     }
+
+    public function seleksiAsal()
+    {
+        return $this->hasMany(SeleksiAsal::class);
+    }
 }

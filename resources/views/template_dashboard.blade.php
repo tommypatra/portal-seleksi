@@ -30,7 +30,7 @@
             Peserta
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Jadwal</a></li>
+            <li><a class="dropdown-item" href="{{ route('jadwal-seleksi') }}">Jadwal</a></li>
             <li><a class="dropdown-item" href="#">Berkas</a></li>
             <li><a class="dropdown-item" href="#">Pengumuman</a></li>
             <li><a class="dropdown-item" href="#">Penetapan</a></li>
@@ -41,7 +41,7 @@
             Verifikator
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarEditor">
-            <li><a class="dropdown-item" href="#">Data</a></li>
+            <li><a class="dropdown-item" href="{{ url('verifikator') }}">Data</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown menu-interview" style="display:none;">
@@ -49,7 +49,7 @@
             Interview
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarEditor">
-            <li><a class="dropdown-item" href="#">Data</a></li>
+            <li><a class="dropdown-item" href="{{ url('interviewer') }}">Data</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown menu-admin" style="display:none;">
@@ -65,7 +65,7 @@
             <li><a class="dropdown-item" href="#">Jenis</a></li>
             <li><a class="dropdown-item" href="#">Grup</a></li>
             <li><a class="dropdown-item" href="{{ route('institusi') }}">Institusi</a></li>
-            <li><a class="dropdown-item" href="#">Akun</a></li>
+            <li><a class="dropdown-item" href="{{ route('akun') }}">Akun</a></li>
           </ul>
         </li>
         <li class="nav-item menu-ganti-akses" style="display:none;">
@@ -121,7 +121,7 @@
         $('.menu-interview').show();
       } else if (akses_grup == 3) {
         $('.menu-verifikator').show();
-      } else if (akses_grup == 4) {
+      } else if (akses_grup == 0) {
         $('.menu-peserta').show();
       }
 
@@ -130,14 +130,15 @@
       if (daftar_akses.length > 1) {
         $('.menu-ganti-akses').show();
         $.each(daftar_akses, function(index, item) {
-          var listItem = `<li><a href='#' onclick="setAkses(${item.grup_id})">${item.nama}</a></li>`;
+          var listItem = `<li><a href='#' onclick="setAkses(${item.grup_id},${item.role_user_id})">${item.nama}</a></li>`;
           $('.daftar-akses').append(listItem);
         });
       }
     }
 
-    function setAkses(id) {
-      localStorage.setItem('akses_grup', id);
+    function setAkses(akses_grup,role_user_id) {
+      localStorage.setItem('akses_grup', akses_grup);
+      localStorage.setItem('role_user_id', role_user_id);
       toastr.success('set akses berhasil, akan diarahkan ke halaman dashboard!', 'berhasil', {
         timeOut: 1000
       });

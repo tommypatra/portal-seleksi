@@ -21,6 +21,7 @@ class SeleksiRequest extends FormRequest
             'verifikasi_mulai' => 'required|date_format:Y-m-d',
             'verifikasi_selesai' => 'required|date_format:Y-m-d',
             'jenis_id' => 'required|integer',
+            'is_publish' => 'required|integer',
             'keterangan' => 'nullable',
         ];
 
@@ -38,6 +39,7 @@ class SeleksiRequest extends FormRequest
             'verifikasi_selesai' => 'tanggal verifikasi selesai',
             'jenis_id' => 'jenis penerimaan',
             'keterangan' => 'keterangan',
+            'is_publish' => 'status publikasi',
         ];
     }
 }

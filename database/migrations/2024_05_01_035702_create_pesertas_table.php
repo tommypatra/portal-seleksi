@@ -19,7 +19,7 @@ class CreatePesertasTable extends Migration
             $table->foreignId('sub_institusi_id');
             $table->foreign('sub_institusi_id')->references('id')->on('sub_institusis')->restrictOnDelete();
             $table->foreignId('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->restrictOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->boolean('is_aktif')->nullable();
             $table->unique(['noid', 'sub_institusi_id']);
 

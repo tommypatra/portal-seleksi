@@ -20,10 +20,12 @@ class SyaratResource extends JsonResource
             'nama' => $this->nama,
             'keterangan' => ($this->keterangan) ? $this->keterangan : "",
             'seleksi' => $this->seleksi,
+            'jenis' => $this->jenis,
+            'jenis_label' => ($this->jenis === 'img') ? 'Gambar' : 'PDF',
             'is_wajib' => $this->is_wajib,
             'is_wajib_label' => ($this->is_wajib) ? 'Wajib' : 'Tidak Wajib',
-            'created_at' => $this->created_at->format('Y-m-d'),
-            'updated_at' => $this->updated_at->format('Y-m-d'),
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

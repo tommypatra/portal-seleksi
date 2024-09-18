@@ -5,6 +5,11 @@ $(document).ready(function() {
     dataLoad();
     dataJenis();
 
+    $('#refresh').click(function(){
+        dataLoad();
+    });
+
+
     $('.datepicker').bootstrapMaterialDatePicker({
         weekStart: 0,
         format: 'YYYY-MM-DD',
@@ -15,7 +20,7 @@ $(document).ready(function() {
         var url = endpoint + '?page=' + page + '&search=' + search + '&limit=' + vLimit;
         fetchData(url, function(response) {
             renderData(response);
-        });
+        },true);
     }
 
     //untuk mengambil api data jenis
@@ -31,6 +36,8 @@ $(document).ready(function() {
         const action = $(this).data('action');
         if (action === 'config') {
             window.location.replace(base_url + '/pengaturan/' + id);
+        } else if (action === 'wawancara') {
+            window.location.replace(base_url + '/instrumen-wawancara/' + id);
         } else if (action === 'edit') {
             showDataById(endpoint, id, function(response) {
                 //jika tidak ada erorr eksekusi form ganti dengan response
@@ -53,6 +60,7 @@ $(document).ready(function() {
             saveData(url, type, $(form).serialize(), function(response) {
                 //jika berhasil maka
                 $('#form').trigger('reset');
+                $('#form input[type="hidden"]').val('');
                 toastr.success('operasi berhasil dilakukan!', 'berhasil');
                 dataLoad();
             });
@@ -76,6 +84,8 @@ $(document).ready(function() {
 //untuk show modal form
 function showModalForm() {
     $('#form').trigger('reset');
+    $('#form input[type="hidden"]').val('');
+
     var fModalForm = new bootstrap.Modal(document.getElementById('modalForm'), {
         keyboard: false
     });
@@ -98,6 +108,7 @@ function formGanti(data) {
     $('#daftar_mulai').val(data.daftar_mulai);
     $('#daftar_selesai').val(data.daftar_selesai);
     $('#verifikasi_mulai').val(data.verifikasi_mulai);
+    $('#is_publish').val(data.is_publish);
     $('#verifikasi_selesai').val(data.verifikasi_selesai);
 }
 
@@ -109,6 +120,7 @@ function renderData(response) {
     dataList.empty();
     if (response.data.length > 0) {
         $.each(response.data, function(index, dt) {
+            const publish=(dt.is_publish==1)?'Terpublikasi':'Belum Terpublikasi';
             const bgdft = (dt.daftar_status) ? 'success' : 'danger';
             const bgver = (dt.verifikasi_status) ? 'success' : 'danger';
             const row = `<tr>
@@ -123,14 +135,16 @@ function renderData(response) {
                         </td>
                         <td><span class="badge text-bg-${bgdft}">${dt.daftar_mulai} sd ${dt.daftar_selesai}</span></td>
                         <td><span class="badge text-bg-${bgver}">${dt.verifikasi_mulai} sd ${dt.verifikasi_selesai}</span></td>
-                        <td>${dt.jenis}</td>
-                        <td>${dt.keterangan}</td>
+                        <td><div>${dt.jenis}</div>${dt.keterangan}</td>
+                        <td>${publish}</td>
+                        <td>${dt.pendaftar}</td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item btn-aksi" data-id="${dt.id}" data-action="config" href="javascript:;"><i class="bi bi-wrench-adjustable"></i> Pengaturan</a></li>
                                     <li><a class="dropdown-item btn-aksi" data-id="${dt.id}" data-action="edit" href="javascript:;"><i class="bi bi-pencil-square"></i> Ganti</a></li>
+                                    <li><a class="dropdown-item" href="${base_url}/pengaturan/${dt.id}"><i class="bi bi-wrench-adjustable"></i> Pengaturan</a></li>
+                                    <li><a class="dropdown-item" href="${base_url}/instrumen-wawancara/${dt.id}"><i class="bi bi-journal-text"></i> Instrumen Wawancara</a></li>
                                     <li><a class="dropdown-item btn-aksi" data-id="${dt.id}" data-action="delete" href="javascript:;"><i class="bi bi-trash3"></i> Hapus</a></li>
                                 </ul>
                             </div>

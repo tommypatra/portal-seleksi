@@ -19,14 +19,14 @@ class SyaratRequest extends FormRequest
             'seleksi_id' => 'required|integer',
             'keterangan' => 'nullable|string',
         ];
-        if ($this->isMethod('put')) {
-            $rules = [
-                'nama' => 'nullable|string',
-                'is_wajib' => 'nullable|integer',
-                'seleksi_id' => 'nullable|integer',
-                'keterangan' => 'nullable|string',
-            ];
-        }
+        // if ($this->isMethod('put')) {
+        //     $rules = [
+        //         'nama' => 'nullable|string',
+        //         'is_wajib' => 'nullable|integer',
+        //         'seleksi_id' => 'nullable|integer',
+        //         'keterangan' => 'nullable|string',
+        //     ];
+        // }
 
         return $rules;
     }

@@ -8,6 +8,12 @@
 @section('container')
 <h1>Institusi</h1>
 <p>digunakan untuk mengatur data institusi</p>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Institusi</li>
+    </ol>
+</nav>
 
 <div class="row">
     <div class="col-sm-12">
